@@ -1,0 +1,86 @@
+{
+  "template": "template/расчет KINI 2026-27 (10).xlsx",
+  "output": "output",
+  "groups": [
+    {
+      "name": "PE-26",
+      "program": "PE",
+      "intake": 2026,
+      "students": 4,
+      "language": "KZ",
+      "file": "input/МУП Process Engineering 2026 (1) (2).xlsx",
+      "students_by_year": {},
+      "exclude_rows": [],
+      "overrides": {}
+    },
+    {
+      "name": "CS-26",
+      "program": "CS",
+      "intake": 2026,
+      "students": 8,
+      "language": "KZ",
+      "file": "input/МУП CS 26.xlsx",
+      "students_by_year": {},
+      "exclude_rows": [],
+      "overrides": {}
+    },
+    {
+      "name": "LOG-26",
+      "program": "LOG",
+      "intake": 2026,
+      "students": 7,
+      "language": "KZ",
+      "file": "input/муп логистика 26.xlsx",
+      "students_by_year": {},
+      "exclude_rows": [],
+      "overrides": {}
+    },
+    {
+      "name": "MECH-26",
+      "program": "MECH",
+      "intake": 2026,
+      "students": 7,
+      "language": "KZ",
+      "file": "input/муп мехатроника 26.xlsx",
+      "students_by_year": {},
+      "exclude_rows": [],
+      "overrides": {}
+    },
+    {
+      "name": "EEE-26",
+      "program": "EEE",
+      "intake": 2026,
+      "students": 9,
+      "language": "KZ",
+      "file": "input/МУП EEE 26.xlsx",
+      "students_by_year": {},
+      "exclude_rows": [],
+      "overrides": {}
+    }
+  ],
+  "aliases": {},
+  "routing": {},
+  "reference_matches": [
+    {
+      "program": "PE",
+      "semester": 1,
+      "name": "Химия 1 / Chemistry 1",
+      "key": "inorganic_chemistry",
+      "evidence": "МУП PE: строка 70, единственная химия I семестра, 5 кредитов; Расчет!38: общая неорганическая химия, PE-26 + EEE-26, 5 кредитов. Химия 2 этим правилом не объединяется."
+    },
+    {
+      "program": "MECH",
+      "semester": 2,
+      "name": "Физика / Физика",
+      "key": "physics1",
+      "evidence": "МУП MECH: строка 71, физика II семестра, 5 кредитов и часы 15/15/15; Расчет!61 включает MECH-26 в поток Физика 1 с PE-26 и EEE-26."
+    }
+  ],
+  "reference_students": {
+    "PE-2026": 4,
+    "CS-2026": 8,
+    "LOG-2026": 7,
+    "MECH-2026": 7,
+    "EEE-2026": 9
+  }
+}

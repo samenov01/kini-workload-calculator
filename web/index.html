@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>KINI — расчёт учебной нагрузки</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Перейти к расчёту</a>
+  <aside class="sidebar">
+    <a class="brand" href="#main" aria-label="KINI — главная"><span class="brand-mark" aria-hidden="true">K</span><span>KINI<small>Учебное планирование</small></span></a>
+    <p class="nav-label">РАБОЧАЯ ОБЛАСТЬ</p>
+    <nav aria-label="Разделы приложения">
+      <a class="nav-link active" href="#setup"><span aria-hidden="true">▦</span> Новый расчёт</a>
+      <a class="nav-link" href="#results"><span aria-hidden="true">↓</span> Результаты <span id="result-count" class="nav-count">0</span></a>
+      <a class="nav-link" href="#rules"><span aria-hidden="true">≡</span> Правила расчёта</a>
+    </nav>
+    <div class="sidebar-note"><span class="status-dot" aria-hidden="true"></span> На этом компьютере<small>Файлы обрабатываются локально.<br>Подключение к интернету не нужно.</small></div>
+  </aside>
+  <main id="main">
+    <header class="topbar"><span>Рабочая область <span class="slash">/</span> Учебная нагрузка</span><span class="format-badge">XLSX <span>·</span> 1 лист</span></header>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">KINI / ПЛАНИРОВАНИЕ НАГРУЗКИ</p>
+      <h1 id="page-title">От учебных планов —<br>к готовому расчёту.</h1>
+      <p>Добавьте МУПы и проверьте группы. Программа соберёт нагрузку<br class="desktop-break"> по семестрам и создаст отдельный Excel для каждого учебного года.</p>
+    </section>
+    <div id="error" class="notice error" role="alert" tabindex="-1" hidden></div>
+    <div id="loading" class="notice" role="status">Читаем сохранённые МУПы…</div>
+    <section class="metrics" aria-label="Состав расчёта">
+      <div><span>МУПов</span><strong id="metric-files">—</strong></div>
+      <div><span>Групп</span><strong id="metric-groups">—</strong></div>
+      <div><span>Студентов</span><strong id="metric-students">—</strong></div>
+      <div class="period"><span>Период обучения</span><strong id="metric-years">—</strong></div>
+    </section>
+    <div class="workspace">
+      <section id="setup" class="panel" aria-labelledby="setup-title">
+        <div class="panel-heading"><div class="heading-line"><span class="step">01</span><h2 id="setup-title">МУПы и группы</h2></div><span id="group-count" class="muted"></span></div>
+        <div id="dropzone" class="dropzone">
+          <svg class="upload-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M12 31H9a6 6 0 0 1-1-12 12 12 0 0 1 23-3 8 8 0 0 1 0 15h-3M20 33V18m-6 6 6-6 6 6"/></svg>
+          <div><strong>Перетащите МУПы сюда</strong><p>Excel .xlsx · можно выбрать несколько · до 12 МБ каждый</p></div>
+          <input id="file-picker" name="files" type="file" accept=".xlsx" multiple class="visually-hidden" aria-label="Выбрать МУПы Excel">
+          <button id="choose-files" type="button" class="button secondary">Выбрать файлы <span aria-hidden="true">＋</span></button>
+        </div>
+        <p id="upload-status" class="upload-status" role="status" aria-live="polite"></p>
+        <form id="calc-form" action="/api/generate" method="post">
+          <p class="form-hint">Все поля группы обязательны. Год — это год поступления, а не год расчёта.</p>
+          <div id="groups"></div>
+          <div id="empty" class="empty" hidden>Загрузите первый МУП или добавьте группу из сохранённых файлов.</div>
+          <button id="add-group" class="text-button" type="button">＋ Добавить группу из сохранённых МУПов</button>
+          <div class="runbar"><div><strong id="run-summary">Подготовка расчёта</strong><small>СРСП, экзамены и суммы — автоматически</small></div><button id="generate" class="button primary" type="submit">Сформировать расчёт <span aria-hidden="true">→</span></button></div>
+        </form>
+      </section>
+      <aside class="right-column">
+        <section class="output-preview panel" aria-labelledby="output-title">
+          <p class="eyebrow">НА ВЫХОДЕ</p><h2 id="output-title">Один год.<br>Одна книга.</h2>
+          <div class="workbook-illustration" aria-hidden="true"><div class="excel-mark">X</div><div class="sheet-lines"><i></i><i></i><i></i><i></i></div><span>.xlsx</span></div>
+          <ul class="sheet-list"><li><span>01</span> Расчет</li></ul>
+          <p class="muted">С полями и оформлением шаблона KINI. Без дополнительных листов.</p>
+        </section>
+        <section id="rules" class="rules" aria-labelledby="rules-title"><h3 id="rules-title">Как считается нагрузка</h3><dl><div><dt>СРСП</dt><dd>1,5 × кредиты</dd></div><div><dt>Экзамен</dt><dd>0,1 × студенты</dd></div></dl><p>Все названия предметов МУПа сохраняются. Составляющие общих блоков показаны отдельными строками; общий бюджет кредитов и часов учитывается один раз.</p><p>Группы объединяются при подтверждённом составе потока. Численность суммируется, часы потока учитываются один раз.</p><details><summary>Если данных недостаточно</summary><p>Неизвестные часы остаются пустыми и выделяются жёлтым. Неподтверждённый вид оплаты остаётся в блоке «Не распределено» на листе «Расчет».</p><p>Всё, что требует уточнения, появится в замечаниях после расчёта. В Excel дополнительные листы не добавляются.</p></details></section>
+      </aside>
+    </div>
+    <section id="job-progress" class="panel progress-panel" hidden aria-labelledby="progress-title"><div class="heading-line"><span class="step">02</span><h2 id="progress-title">Формируем расчёт</h2></div><progress aria-label="Формирование файлов"></progress><p id="job-message" role="status" aria-live="polite"></p><small class="muted">Можно оставить страницу открытой. Повторно запускать расчёт не нужно.</small></section>
+    <section id="results" class="results" aria-labelledby="results-title">
+      <div class="section-heading"><div><p class="eyebrow">ГОТОВЫЕ ФАЙЛЫ</p><h2 id="results-title">Результаты расчёта</h2></div><a id="download-all" class="button primary" hidden>Скачать всё .zip <span aria-hidden="true">↓</span></a></div>
+      <div id="stale" class="notice" hidden>Настройки изменены. Файлы ниже относятся к предыдущему расчёту — запустите формирование заново.</div>
+      <p id="results-empty" class="muted">Здесь появятся книги по учебным годам после формирования расчёта.</p>
+      <div id="result-files" class="result-grid"></div>
+      <div id="review" class="panel review" hidden>
+        <div class="panel-heading"><div><h3>Замечания к исходным данным</h3><p id="review-summary" class="muted"></p></div><a id="download-report" class="text-button">Скачать полный отчёт</a></div>
+        <p class="review-note">Итоги проверены арифметически, но включают только заполненные часы. Пустые поля не означают отсутствие нагрузки.</p>
+        <div class="filters"><label>Тип замечания<select id="issue-kind"><option value="">Все типы</option></select></label><label>Учебный год<select id="issue-year"><option value="">Все годы</option></select></label><label class="search">Поиск<input id="issue-search" type="search" placeholder="Группа, дисциплина или файл" autocomplete="off"></label></div>
+        <p id="issue-counter" class="muted" role="status"></p>
+        <div class="table-scroll"><table><thead><tr><th scope="col">Тип</th><th scope="col">Группа и источник</th><th scope="col">Комментарий</th></tr></thead><tbody id="issue-rows"></tbody></table></div>
+        <button id="more-issues" class="text-button" type="button" hidden>Показать ещё</button>
+      </div>
+    </section>
+    <footer class="footer"><span>KINI · Расчёт учебной нагрузки</span><span>МУП → группы → семестры → Excel</span></footer>
+    <noscript><p class="notice error">Для выбора файлов и запуска расчёта включите JavaScript в браузере. Также доступен запуск generate_kini.bat.</p></noscript>
+  </main>
+</body>
+</html>
